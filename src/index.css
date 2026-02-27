@@ -1,4 +1,11 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme static {
+  --color-primary: #1a56db;
+  --color-status-done: #10b981;
+  --color-status-pending: #f59e0b;
+}
 
 html, body {
   width: 100%;

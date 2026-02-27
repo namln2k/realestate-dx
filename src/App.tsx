@@ -6,7 +6,8 @@ import { UserRole } from '@/types';
 import { MePage } from "@/pages/MePage";
 import { AdminPage } from "@/pages/AdminPage";
 import { ConfigPage } from "@/pages/ConfigPage";
-import { Toaster } from "react-hot-toast";
+import { ChatPage } from "@/pages/ChatPage";
+import { ReactQueryProvider } from "@/context/ReactQueryContext";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -15,7 +16,7 @@ interface ProtectedRouteProps {
 
 function ProtectedRoute({ children, requiredRole }: ProtectedRouteProps) {
   const { user, isLoading } = useAuth();
-  
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -23,7 +24,7 @@ function ProtectedRoute({ children, requiredRole }: ProtectedRouteProps) {
       </div>
     );
   }
-  
+
   if (!user) {
     return <Navigate to="/login" replace />;
   }
@@ -36,42 +37,40 @@ function ProtectedRoute({ children, requiredRole }: ProtectedRouteProps) {
 }
 
 function AppContent() {
-  const { isLoading } = useAuth();
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent"></div>
-      </div>
-    );
-  }
-
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
-      <Route 
-        path="/me" 
+      <Route
+        path="/"
+        element={
+          <ProtectedRoute>
+            <ChatPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/me"
         element={
           <ProtectedRoute>
             <MePage />
           </ProtectedRoute>
-        } 
+        }
       />
-      <Route 
-        path="/admin" 
+      <Route
+        path="/admin"
         element={
           <ProtectedRoute requiredRole="admin">
             <AdminPage />
           </ProtectedRoute>
-        } 
+        }
       />
-      <Route 
-        path="/admin/config" 
+      <Route
+        path="/admin/config"
         element={
           <ProtectedRoute requiredRole="admin">
             <ConfigPage />
           </ProtectedRoute>
-        } 
+        }
       />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
@@ -81,8 +80,9 @@ function AppContent() {
 function App() {
   return (
     <AuthProvider>
-      <Toaster position="top-center" />
-      <AppContent />
+      <ReactQueryProvider>
+        <AppContent />
+      </ReactQueryProvider>
     </AuthProvider>
   );
 }
