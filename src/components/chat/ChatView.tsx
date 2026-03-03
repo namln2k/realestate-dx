@@ -13,12 +13,7 @@ export const ChatView = ({
   const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
     initialPageParam: 1,
     queryKey: ["messages", conversationId],
-    queryFn: async ({ pageParam = null }) => {
-      // const res = await fetch(
-      //   `/api/messages?conversationId=${conversationId}&cursor=${pageParam ?? ""}`
-      // );
-      // return res.json();
-
+    queryFn: async () => {
       const data = await fetchMockSessionById(conversationId);
       return data;
     },

@@ -13,9 +13,7 @@ export const ConversationSidebar = ({
     initialPageParam: 1,
     queryKey: ["conversations"],
     // TODO: Replace with real API call and handle pagination
-    queryFn: async ({ pageParam = null }) => {
-      // const res = await fetch(`/api/conversations?cursor=${pageParam ?? ""}`);
-      // const data = res.json();
+    queryFn: async () => {
       const data = await fetchMockSessions();
       return data;
     },

@@ -95,7 +95,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (state.isLoading) {
       return;
     }
-    
+
     if (state.isAuthenticated && state.user) {
       const dataToStore = { user: state.user };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToStore));
@@ -116,17 +116,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     //   throw error;
     // }
 
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    await new Promise((resolve) => {
+      console.log({ identifier, password });
+      setTimeout(resolve, 500)
+    });
 
     // dispatch({ type: 'LOGIN_ERROR', payload: 'Login error' });
     // return { message: 'Login error' };
 
-    dispatch({ type: 'LOGIN_SUCCESS', payload: {
+    dispatch({
+      type: 'LOGIN_SUCCESS', payload: {
         name: 'Nam',
         roles: ['admin'],
         avatar: '',
         createdAt: new Date(),
-    }});
+      }
+    });
     return {
       user: {
         name: 'Nam',
