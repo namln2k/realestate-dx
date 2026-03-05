@@ -95,27 +95,21 @@ const MOCK_SESSIONS = [
  * Mock API functions
  * TODO: Replace with real API calls and handle pagination
  */
-export function fetchMockSessions(): Promise<{ items: Conversation[]; nextCursor: number | null }> {
+export function fetchMockSessions(): Promise<Conversation[]> {
   return new Promise((resolve) => {
     setTimeout(() => {
-      resolve({
-        items: MOCK_SESSIONS.map(({ id, title, updatedAt }) => ({ id, title, timestamp: updatedAt })),
-        nextCursor: null,
-      });
+      resolve(MOCK_SESSIONS.map(({ id, title, updatedAt }) => ({ id, title, timestamp: updatedAt })));
     }, 500);
   });
 }
 
-export function fetchMockSessionById(id: string): Promise<{ items: Message[]; prevCursor: number | null }> {
+export function fetchMockSessionById(id: string): Promise<Message[]> {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       const session = MOCK_SESSIONS.find((s) => s.id === id);
-      
+
       if (session) {
-        resolve({
-          items: session.messages,
-          prevCursor: null,
-        });
+        resolve(session.messages);
       } else {
         reject(new Error('Session not found'));
       }

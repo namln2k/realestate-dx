@@ -3,6 +3,7 @@ import { useForm } from '@/hooks/useForm';
 import { useNavigate } from 'react-router-dom';
 import { Input } from '@/components/common/Input';
 import { useMemo, useState } from 'react';
+import { getMessage } from '@/services/translationService';
 
 export function LoginForm() {
     const { login, isLoading } = useAuth();
@@ -13,18 +14,16 @@ export function LoginForm() {
         useForm({
             initialValues: { identifier: '', password: '' },
             onSubmit: async (values) => {
-                // TODO: Handle login success and failure
                 try {
                     const response = await login(values.identifier, values.password);
 
                     if (!response?.user) {
-                        setError(response?.message || 'Login failed');
-                        return;
+                        setError(getMessage(response.error));
                     }
 
                     navigate('/');
                 } catch (err: any) {
-                    setError(err.message || 'Login failed');
+                    setError(getMessage('MSG-LOGIN-INTERNAL-ERROR'));
                 }
             },
         });

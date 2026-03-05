@@ -1,6 +1,5 @@
-import { List } from "react-window";
-import { useInfiniteQuery } from "@tanstack/react-query";
 import { fetchMockSessions } from "@/mockdata";
+import { useQuery } from "@tanstack/react-query";
 
 export const ConversationSidebar = ({
   activeId,
@@ -9,21 +8,26 @@ export const ConversationSidebar = ({
   activeId: string | null;
   onSelect: (id: string) => void;
 }) => {
-  const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
-    initialPageParam: 1,
+  const { data: conversations, isLoading } = useQuery({
     queryKey: ["conversations"],
     // TODO: Replace with real API call and handle pagination
-    queryFn: async ({ pageParam = null }) => {
+    queryFn: async () => {
       // const res = await fetch(`/api/conversations?cursor=${pageParam ?? ""}`);
       // const data = res.json();
       const data = await fetchMockSessions();
       return data;
     },
-    getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
   });
 
-  const conversations =
-    data?.pages.flatMap((page) => page.items) ?? [];
+  if (isLoading) {
+    return <div className="p-4 text-sm text-gray-500">Loading conversations...</div>;
+  }
+
+  if (!conversations || conversations.length === 0) {
+    return <div className="p-4 text-sm text-gray-500">No conversations found.</div>;
+  }
+
+  const rowCount = conversations.length;
 
   const Row = (row: any) => {
     const conv = conversations[row.index];
@@ -41,18 +45,12 @@ export const ConversationSidebar = ({
   };
 
   return (
-    <div className="space-y-2">
-      <List
-        rowProps={{ activeId }}
-        rowCount={conversations.length}
-        rowHeight={72}
-        rowComponent={Row}
-        onRowsRendered={({ stopIndex }) => {
-          if (hasNextPage && stopIndex >= conversations.length - 5) {
-            fetchNextPage();
-          }
-        }}
-      />
+    <div className="h-full space-y-2 overflow-y-auto">
+      {
+        conversations.map((conv, index) => (
+          <Row key={conv.id} index={index} />
+        ))
+      }
     </div>
   );
 }

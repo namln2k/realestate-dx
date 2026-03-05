@@ -5,6 +5,18 @@ export const UserRole = {
 
 export type UserRole = typeof UserRole[keyof typeof UserRole];
 
+export interface AuthAction {
+  type: 'LOGIN_START' | 'LOGIN_SUCCESS' | 'LOGIN_ERROR' | 'LOGOUT' | 'REGISTER_START' | 'REGISTER_SUCCESS' | 'REGISTER_ERROR' | 'UPDATE_USER' | 'INIT_FROM_STORAGE';
+  payload?: any;
+}
+
+export const initialState: AuthState = {
+  user: null,
+  isAuthenticated: false,
+  isLoading: true,
+  error: null,
+};
+
 export interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
